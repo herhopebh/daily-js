@@ -863,7 +863,8 @@ export default class DailyIframe extends EventEmitter {
   }
 
   async leave() {
-    return new Promise((resolve, _) => {
+    return new Promise((resolve, reject) => {
+      console.log("<_____module.js/leave_____")
       let k = () => {
         if (this._iframe) {
           // resetting the iframe src maybe interferes with sending the
@@ -875,22 +876,33 @@ export default class DailyIframe extends EventEmitter {
         this._activeSpeakerMode = false;
         resetPreloadCache(this._preloadCache);
         try {
+          console.log("_____module.js/leave about to emit DAILY_STATE_LEFT")
           this.emit(DAILY_STATE_LEFT, { action: DAILY_STATE_LEFT });
+          console.log("_____module.js/leave after emit DAILY_STATE_LEFT")
         } catch (e) {
           console.log("could not emit 'left-meeting'");
+          console.log("_____module.js/leave rejected______>")
+          reject(e);
         }
+        console.log("_____module.js/leave resolved_____>")
         resolve();
+        console.log("_____module.js/leave resolved_____>")
       };
+      console.log("_____module.js/leave this._callObjectLoader", this._callObjectLoader)
+      console.log("_____module.js/leave this._callObjectLoader && !this._callObjectLoader.loaded", this._callObjectLoader && !this._callObjectLoader.loaded)
       if (this._callObjectLoader && !this._callObjectLoader.loaded) {
         // If call object bundle never successfully loaded, cancel load if
         // needed and clean up state immediately (without waiting for call
         // machine to clean up its state).
         this._callObjectLoader.cancel();
+        console.log("_____module.js/leave about to call k() and resolve leave()")
         k();
       } else {
+        console.log("_____module.js/leave about to sendMessageToCallMachine- DAILY_METHOD_LEAVE")
         // TODO: the possibility that the iframe call machine is not yet loaded
         // is never handled here...
         this.sendMessageToCallMachine({ action: DAILY_METHOD_LEAVE }, k);
+        console.log("_____module.js/leave after sendMessageToCallMachine- DAILY_METHOD_LEAVE")
       }
     });
   }
