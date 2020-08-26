@@ -1845,7 +1845,7 @@ export default class DailyIframe extends EventEmitter {
     this._meetingState = meetingState;
     this.updateKeepDeviceAwake(oldMeetingState);
     this.updateDeviceAudioMode(oldMeetingState);
-    this.updateKeepMeetingRunningInBackground(oldMeetingState);
+    this.updateShowOngoingMeetingNotification(oldMeetingState);
   }
 
   updateKeepDeviceAwake(oldMeetingState) {
@@ -1879,21 +1879,21 @@ export default class DailyIframe extends EventEmitter {
     this.nativeUtils().setAudioMode(inCallAudioMode);
   }
 
-  updateKeepMeetingRunningInBackground(oldMeetingState) {
+  updateShowOngoingMeetingNotification(oldMeetingState) {
     if (!isReactNative()) {
       return;
     }
-    const oldKeepMeetingRunningInBackground = this.shouldKeepMeetingRunningInBackground(
+    const oldShowOngoingMeetingNotification = this.shouldShowOngoingMeetingNotification(
       oldMeetingState
     );
-    const keepMeetingRunningInBackground = this.shouldKeepMeetingRunningInBackground(
+    const showOngoingMeetingNotification = this.shouldShowOngoingMeetingNotification(
       this._meetingState
     );
-    if (oldKeepMeetingRunningInBackground === keepMeetingRunningInBackground) {
+    if (oldShowOngoingMeetingNotification === showOngoingMeetingNotification) {
       return;
     }
-    this.nativeUtils().setKeepMeetingRunningInBackground(
-      keepMeetingRunningInBackground,
+    this.nativeUtils().setShowOngoingMeetingNotification(
+      showOngoingMeetingNotification,
       this._callFrameId
     );
   }
@@ -1906,7 +1906,7 @@ export default class DailyIframe extends EventEmitter {
     return this.isMeetingPendingOrOngoing(meetingState);
   }
 
-  shouldKeepMeetingRunningInBackground(meetingState) {
+  shouldShowOngoingMeetingNotification(meetingState) {
     return this.isMeetingPendingOrOngoing(meetingState);
   }
 
